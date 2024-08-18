@@ -113,6 +113,7 @@ nav .logo-container .logo {
 }
 
 /*-------- OnBoarding Page --------*/
+/*-------- OnBoarding Page --------*/
 .onboarding {
     border-top: solid 1px rgb(213, 213, 213);
 }
@@ -187,8 +188,22 @@ nav .logo-container .logo {
     background-color: rgb(0, 153, 204);
 }
 
-.onboarding form .photo-container img {
+.onboarding form .photo-container {
     width: 100%;
+    max-width: 200px; /* Adjust as needed */
+    height: auto;
+    margin: 10px 0;
+    text-align: center; /* Center the image */
+    border: 1px solid #ddd; /* Optional border */
+    border-radius: 10px; /* Optional rounded corners */
+    overflow: hidden; /* Ensure overflow is hidden */
+}
+
+.onboarding form .photo-container img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Ensures block display to remove extra space below image */
+    border-radius: 8px; /* Optional rounded corners for the image */
 }
 
 .university-container {
@@ -197,15 +212,16 @@ nav .logo-container .logo {
 
 .suggestions-container {
     position: absolute;
-    top:100%; /* Position below the input */
+    top: 100%; /* Position directly below the input */
     left: 0;
     right: 0;
     background: white;
     border: 1px solid #ddd;
     border-radius: 4px;
     z-index: 10;
-    max-height: 200px; /* Adjust as needed */
+    max-height: 200px;
     overflow-y: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
 }
 
 .suggestions-container ul {
@@ -227,6 +243,7 @@ nav .logo-container .logo {
     display: flex;
     align-items: center;
 }
+
 
 /*-------- Dashboard  --------*/
 .dashboard {
@@ -338,6 +355,8 @@ nav .logo-container .logo {
     width: 30%;
     text-align: left;
     z-index: 1;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .chat-container .chat-container-header {
@@ -346,6 +365,7 @@ nav .logo-container .logo {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 .chat-container .option {
@@ -355,10 +375,17 @@ nav .logo-container .logo {
     font-size: 20px;
     margin: 2px;
     padding: 10px;
+    cursor: pointer;
+    transition: border-bottom 0.3s ease;
+}
+
+.chat-container .option:hover {
+    border-bottom: solid 4px rgb(0, 87, 130);
 }
 
 .chat-container .option:disabled {
     border-bottom: solid 4px rgb(187, 187, 187);
+    cursor: not-allowed;
 }
 
 .chat-container .profile,
@@ -369,12 +396,22 @@ nav .logo-container .logo {
     color: rgb(255, 255, 255);
 }
 
+.chat-container .log-out-icon {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.chat-container .log-out-icon:hover {
+    transform: scale(1.1);
+}
+
 .img-container {
     height: 30px;
     width: 30px;
-    border-radius: 15px;
+    border-radius: 50%;
     overflow: hidden;
     margin: 10px;
+    border: 2px solid rgb(255, 255, 255);
 }
 
 .img-container img {
@@ -387,6 +424,19 @@ nav .logo-container .logo {
     padding: 20px;
     height: 60vh;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(0, 153, 204) rgb(230, 230, 230); /* Firefox */
+}
+
+.chat-display::-webkit-scrollbar,
+.matches-display::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-display::-webkit-scrollbar-thumb,
+.matches-display::-webkit-scrollbar-thumb {
+    background-color: rgb(0, 153, 204);
+    border-radius: 3px;
 }
 
 /*-------- Chat Input --------*/
@@ -395,6 +445,30 @@ nav .logo-container .logo {
     display: flex;
     flex-direction: column;
 }
+
+.chat-input textarea {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 10px;
+    resize: none;
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.chat-input button {
+    background-color: rgb(0, 153, 204);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: rgb(0, 87, 130);
+}
+
 
 
 

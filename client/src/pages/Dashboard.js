@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import axios from 'axios';
 import SwipeableCard from '../components/SwipeableCard'; // Adjust import based on location
 import ChatContainer from '../components/ChatContainer';
 
@@ -13,36 +14,45 @@ const Dashboard = () => {
 
     const userId = cookies.UserId;
 
-    // Dummy data
-    const dummyUsers = [
-        { user_id: "1", first_name: "Alice", university: "University A", url: "https://example.com/alice.jpg", matches: [] },
-        { user_id: "2", first_name: "Bob", university: "University B", url: "https://example.com/bob.jpg", matches: [] },
-        { user_id: "3", first_name: "Charlie", university: "University A", url: "https://example.com/charlie.jpg", matches: [] }
-    ];
-
-    // Simulate fetching user
-    const getUser = () => {
-        const userData = dummyUsers.find(user => user.user_id === userId);
-        setUser(userData || null);
+    const getUser = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/user', {
+                params: { userId }
+            });
+            setUser(response.data);
+        } catch (error) {
+            console.log("Error fetching user:", error);
+        }
     };
 
-    // Simulate fetching university-matched users
-    const getUniversityMatchedUsers = () => {
-        const matchedUsers = dummyUsers.filter(user => user.university === user?.university && user.user_id !== userId);
-        setUniversityMatchedUsers(matchedUsers);
+    const getUniversityMatchedUsers = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/university-matched-users', {
+                params: { university: user?.university }
+            });
+            setUniversityMatchedUsers(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    // Simulate searching user by userId
-    const searchUser = () => {
+    const searchUser = async () => {
         if (searchUserId) {
-            const userData = dummyUsers.find(user => user.user_id === searchUserId);
-            setSearchResult(userData || null);
+            try {
+                const response = await axios.get('http://localhost:3000/user', {
+                    params: { userId: searchUserId }
+                });
+                setSearchResult(response.data);
+            } catch (error) {
+                console.log(error);
+                setSearchResult(null);
+            }
         }
     };
 
     useEffect(() => {
         getUser();
-    }, [userId]);
+    }, []);
 
     useEffect(() => {
         if (user) {
@@ -50,10 +60,16 @@ const Dashboard = () => {
         }
     }, [user]);
 
-    const updateMatches = (matchedUserId) => {
-        // Simulate updating matches
-        const updatedUser = { ...user, matches: [...user.matches, { user_id: matchedUserId }] };
-        setUser(updatedUser);
+    const updateMatches = async (matchedUserId) => {
+        try {
+            await axios.put('http://localhost:3000/addmatch', {
+                userId,
+                matchedUserId
+            });
+            getUser();
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const swiped = (direction, swipedUserId) => {
@@ -66,6 +82,9 @@ const Dashboard = () => {
     const outOfFrame = (name) => {
         console.log(name + ' left the screen!');
     };
+
+    const matchedUserIds = user?.matches.map(({ user_id }) => user_id).concat(userId);
+    const filteredUniversityMatchedUsers = universityMatchedUsers?.filter(universityUser => !matchedUserIds.includes(universityUser.user_id));
 
     return (
         <>
@@ -85,7 +104,7 @@ const Dashboard = () => {
                         <div className="search-result">
                             <h3>Search Result</h3>
                             <div
-                                style={{ backgroundImage: `url(${searchResult.url})` }}
+                                style={{backgroundImage: `url(${searchResult.url})`}}
                                 className="card"
                             >
                                 <h3>{searchResult.first_name}</h3>
@@ -94,17 +113,17 @@ const Dashboard = () => {
                     )}
                     <div className="swipe-container">
                         <div className="card-container">
-                            {universityMatchedUsers?.map((universityUser) => (
+                            {filteredUniversityMatchedUsers?.map((universityUser) => (
                                 <SwipeableCard
                                     key={universityUser.user_id}
                                     onSwipe={(dir) => swiped(dir, universityUser.user_id)}
                                     onCardLeftScreen={() => outOfFrame(universityUser.first_name)}
                                 >
                                     <div
-                                        style={{ backgroundImage: `url(${universityUser.url})` }}
+                                        style={{backgroundImage: `url(${searchResult.url})`}}
                                         className="card"
                                     >
-                                        <h3>{universityUser.first_name}</h3>
+                                        <h3>{searchResult.first_name}</h3>
                                     </div>
                                 </SwipeableCard>
                             ))}
